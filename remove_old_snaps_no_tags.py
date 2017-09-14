@@ -9,9 +9,10 @@ def lambda_handler(event, context):
     delete_counter = 0
     error_counter = 0
 
-    delete_date = datetime.utcnow() - timedelta(retention_days=retention_days)
+    delete_date = datetime.utcnow() - timedelta(days=retention_days)
     print "Today's date (UTC) is - " + str(datetime.utcnow())
-    print "Deleting snapshots older than " + str(delete_date) + "(" + str(retention_days) + ") days"
+    print "Deleting snapshots older than " + str(delete_date) + \
+        "(" + str(retention_days) + ") days"
 
     for snap in ec2.snapshots.filter(
     # SnapshotIds=[
@@ -38,7 +39,8 @@ def lambda_handler(event, context):
         #if snap_id != test_snap_id and delete_date > snap_date:
             try:
                 snap.delete()
-                print "Deleted snapshot " + snap.id + " from " + str(snap_date)
+                print "Deleted snapshot (" + snap.id + ") of " + \
+                    str(snap.volume) + " from " + str(snap_date)
                 delete_counter = delete_counter+1
             except Exception as e:
                 print "Failed to delete snapshot"
